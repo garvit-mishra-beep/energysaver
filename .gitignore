@@ -85,3 +85,8 @@ desktop.ini
 *.pfx
 *.cert
 *.crt
+
+# Internal Task Lists & AI Coding Agent Guidelines
+TASKS.md
+AGENTS.md
+
