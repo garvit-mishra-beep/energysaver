@@ -19,9 +19,13 @@ const server = app.listen(config.port, config.host, async () => {
   if (dbStatus.ok) {
     console.log(`[ENERGY SAVER] MySQL database connection verified (Host: ${config.db.host}:${config.db.port}, Database: ${config.db.database})`);
   } else {
-    console.warn(`[ENERGY SAVER NOTICE] MySQL database is currently unreachable (${dbStatus.error}).`);
-    console.warn(`[ENERGY SAVER NOTICE] Frontend remains 100% testable in Phase 1 Demo mode at http://localhost:${config.port}/index.html.`);
-    console.warn(`[ENERGY SAVER NOTICE] Run 'npm run db:check' to test MySQL once your credentials are set in .env.`);
+    console.warn(`[ENERGY SAVER NOTICE] MySQL database is currently unreachable at ${config.db.host}:${config.db.port} (${dbStatus.error}).`);
+    if (config.isProduction) {
+      console.warn(`[ENERGY SAVER NOTICE] In production, ensure Railway MySQL variables (MYSQLHOST, MYSQLPORT, MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE) or MYSQL_PRIVATE_URL are linked.`);
+    } else {
+      console.warn(`[ENERGY SAVER NOTICE] Frontend remains 100% testable in Phase 1 Demo mode at http://localhost:${config.port}/index.html.`);
+      console.warn(`[ENERGY SAVER NOTICE] Run 'npm run db:check' to test MySQL once your credentials are set in .env.`);
+    }
   }
 });
 

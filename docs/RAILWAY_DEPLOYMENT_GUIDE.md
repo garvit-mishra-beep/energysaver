@@ -63,16 +63,39 @@ EnergySaver's configuration (`src/config/index.js`) automatically prioritizes Ra
 
 ### Step 3: Link the Node.js Service to MySQL
 1. In your Node.js application service settings, navigate to the **"Variables"** tab.
-2. Click **"Add Reference"** and select the MySQL service variables, or use Railway's **"Connect"** option. Railway will automatically populate:
-   - `MYSQLHOST`
-   - `MYSQLPORT`
-   - `MYSQLUSER`
-   - `MYSQLPASSWORD`
-   - `MYSQLDATABASE`
+2. Link your MySQL service. Railway supports two robust methods:
+   - **Method A (Single URL variable — Simplest & Most Reliable):**
+     Add a reference variable:
+     `MYSQL_PRIVATE_URL` = `${{MySQL.MYSQL_PRIVATE_URL}}` (or `${{mysql.MYSQL_PRIVATE_URL}}`)
+     EnergySaver automatically parses the user, password, host, port, and database from this URL!
+   - **Method B (Individual Reference Variables):**
+     Add references to the MySQL service variables:
+     - `MYSQLHOST` = `${{MySQL.MYSQLHOST}}` (or `${{mysql.MYSQLHOST}}`)
+     - `MYSQLPORT` = `${{MySQL.MYSQLPORT}}` (or `${{mysql.MYSQLPORT}}`)
+     - `MYSQLUSER` = `${{MySQL.MYSQLUSER}}` (or `${{mysql.MYSQLUSER}}`)
+     - `MYSQLPASSWORD` = `${{MySQL.MYSQLPASSWORD}}` (or `${{mysql.MYSQLPASSWORD}}`)
+     - `MYSQLDATABASE` = `${{MySQL.MYSQLDATABASE}}` (or `${{mysql.MYSQLDATABASE}}`)
 3. Add the remaining required production variables:
    - `NODE_ENV` = `production`
    - `TRUST_PROXY` = `true`
    - `SESSION_SECRET` = `(Generate a 64-character random string, e.g. e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855)`
+
+> [!IMPORTANT]
+> **Case Sensitivity Notice:** Service references in Railway are case-sensitive matching your service name. If your database service is named `mysql` (lowercase), use `${{mysql.MYSQLHOST}}`. If named `MySQL` (capitalized), use `${{MySQL.MYSQLHOST}}`. If unresolved, EnergySaver automatically prevents falling back to `127.0.0.1` in production.
+
+---
+
+### Step 3b: Railway MySQL Password Rotation Procedure
+If your database password has ever been exposed or needs routine rotation:
+1. Open your Railway project dashboard and select the **MySQL** service.
+2. Navigate to the **Variables** tab.
+3. Locate `MYSQLPASSWORD` (or `MYSQL_ROOT_PASSWORD`).
+4. Click on the value and change it to a new strong random secret (e.g. 32+ characters), or click the regenerate button if available.
+5. Save the change. Railway will immediately restart the MySQL database with the updated credentials.
+6. Verify your **Node.js** service variables:
+   - If using Railway references (e.g., `${{MySQL.MYSQLPASSWORD}}` or `${{MySQL.MYSQL_PRIVATE_URL}}`), Railway automatically propagates the updated secret to the web service and triggers an automatic rolling restart!
+   - If you manually entered static strings in your Node service, update `DB_PASSWORD` or `MYSQLPASSWORD` with the identical new secret and redeploy.
+7. Confirm that `GET /health/ready` returns `"status": "READY"` and `"database": "CONNECTED"`.
 
 ### Step 4: Run Database Schema Initialization (`db:init`)
 Before users can register or save appliances, the relational tables must be created:
@@ -161,9 +184,10 @@ If you decide in the future to host the static HTML/JS frontend on a separate se
 
 | Symptom / Error | Root Cause | Solution |
 |:---|:---|:---|
+| **`[ENERGY SAVER NOTICE] MySQL database is currently unreachable (ECONNREFUSED)`** | The backend is attempting to connect to `127.0.0.1:3306` because `DB_HOST` is unset or literal, or private DNS hostname `mysql.railway.internal` has not been provided | Ensure `MYSQL_PRIVATE_URL` or `MYSQLHOST` reference is set in the Railway web service variables. In production, Railway services communicate across Railway's private network using `mysql.railway.internal`, not localhost. |
 | **Build fails with "Node version not found"** | Missing Node engine specification | Confirmed: `.nvmrc` is set to `20` and `package.json` specifies `"node": ">=18.0.0"`. Railway uses Node 20 LTS. |
 | **Server crashes on boot with `[FATAL CONFIG ERROR] SESSION_SECRET must be set`** | `NODE_ENV=production` is set, but `SESSION_SECRET` is missing or shorter than 32 characters | Add `SESSION_SECRET` with $\ge 32$ random characters in the Railway dashboard Variables tab. |
-| **`GET /health/ready` returns 503 `DISCONNECTED`** | Database variables not linked or MySQL is still starting | Ensure `MYSQLHOST` or `DB_HOST` is correctly populated. Verify that MySQL plugin service status is green in Railway canvas. |
+| **`GET /health/ready` returns 503 `DISCONNECTED`** | Database variables not linked or MySQL is still starting | Ensure `MYSQLHOST` or `MYSQL_PRIVATE_URL` is correctly populated. Verify that MySQL plugin service status is green in Railway canvas. |
 | **Session logout / state loss on page refresh** | Reverse proxy HTTPS headers ignored | Ensure `TRUST_PROXY=true` is configured so Express trusts Railway's incoming SSL termination proxy. |
 | **App operates in "Demo Mode" instead of "Database Mode"** | `GET /api/auth/me` returns 401 or database is offline | Non-blocking startup allows guest demo mode (`localStorage`) to function even if MySQL is initializing. Run `db:init` and register a new account. |
 

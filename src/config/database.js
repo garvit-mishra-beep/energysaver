@@ -23,12 +23,19 @@ function getPool() {
       waitForConnections: config.db.waitForConnections,
       connectionLimit: config.db.connectionLimit,
       queueLimit: config.db.queueLimit,
-      charset: 'utf8mb4_unicode_ci'
+      charset: 'utf8mb4_unicode_ci',
+      connectTimeout: 15000,
+      enableKeepAlive: true,
+      keepAliveInitialDelay: 10000
     };
     if (config.db.ssl) {
       poolConfig.ssl = config.db.ssl;
     }
     pool = mysql.createPool(poolConfig);
+
+    pool.on('error', (err) => {
+      console.warn('[DATABASE POOL EVENT]', err.code || err.message);
+    });
   }
   return pool;
 }
