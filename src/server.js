@@ -9,8 +9,8 @@ const { checkConnection, closePool } = require('./config/database');
 
 const app = createApp();
 
-const server = app.listen(config.port, async () => {
-  console.log(`[ENERGY SAVER] Server running at http://localhost:${config.port}`);
+const server = app.listen(config.port, config.host, async () => {
+  console.log(`[ENERGY SAVER] Server running at http://${config.host}:${config.port}`);
   console.log(`[ENERGY SAVER] Environment: ${config.env}`);
   console.log(`[ENERGY SAVER] Serving static frontend from: public/`);
 

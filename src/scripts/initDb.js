@@ -15,29 +15,42 @@ async function runInit() {
 
   let rootConnection = null;
   try {
-    // 1. Connect without database to ensure database exists
-    rootConnection = await mysql.createConnection({
-      host: config.db.host,
-      port: config.db.port,
-      user: config.db.user,
-      password: config.db.password
-    });
+    // 1. Try to ensure database exists (if user has server-level permissions)
+    try {
+      const rootOpts = {
+        host: config.db.host,
+        port: config.db.port,
+        user: config.db.user,
+        password: config.db.password
+      };
+      if (config.db.ssl) rootOpts.ssl = config.db.ssl;
+      rootConnection = await mysql.createConnection(rootOpts);
 
-    console.log(`Ensuring database '${config.db.database}' exists...`);
-    await rootConnection.query(
-      `CREATE DATABASE IF NOT EXISTS \`${config.db.database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
-    );
-    await rootConnection.end();
+      console.log(`Ensuring database '${config.db.database}' exists...`);
+      await rootConnection.query(
+        `CREATE DATABASE IF NOT EXISTS \`${config.db.database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
+      );
+      await rootConnection.end();
+      rootConnection = null;
+    } catch (dbCreateErr) {
+      console.log(`[NOTICE] Bypassing root CREATE DATABASE check (${dbCreateErr.message}). Connecting directly to target database.`);
+      if (rootConnection) {
+        await rootConnection.end().catch(() => {});
+        rootConnection = null;
+      }
+    }
 
     // 2. Connect directly to target database
-    const dbConnection = await mysql.createConnection({
+    const dbOpts = {
       host: config.db.host,
       port: config.db.port,
       user: config.db.user,
       password: config.db.password,
       database: config.db.database,
       multipleStatements: true
-    });
+    };
+    if (config.db.ssl) dbOpts.ssl = config.db.ssl;
+    const dbConnection = await mysql.createConnection(dbOpts);
 
     console.log(`Reading SQL schema from sql/schema.sql...`);
     const schemaSql = fs.readFileSync(path.resolve(__dirname, '../../sql/schema.sql'), 'utf-8');

@@ -14,7 +14,7 @@ let pool = null;
  */
 function getPool() {
   if (!pool) {
-    pool = mysql.createPool({
+    const poolConfig = {
       host: config.db.host,
       port: config.db.port,
       user: config.db.user,
@@ -24,7 +24,11 @@ function getPool() {
       connectionLimit: config.db.connectionLimit,
       queueLimit: config.db.queueLimit,
       charset: 'utf8mb4_unicode_ci'
-    });
+    };
+    if (config.db.ssl) {
+      poolConfig.ssl = config.db.ssl;
+    }
+    pool = mysql.createPool(poolConfig);
   }
   return pool;
 }
@@ -47,7 +51,9 @@ async function checkConnection() {
   } catch (err) {
     return {
       ok: false,
-      error: err.code || err.message || 'Database connection error'
+      error: config.isProduction
+        ? (err.code || 'Database connection error')
+        : (err.code || err.message || 'Database connection error')
     };
   }
 }

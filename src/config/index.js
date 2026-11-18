@@ -23,19 +23,23 @@ if (isProduction && (!SESSION_SECRET || SESSION_SECRET.length < 32)) {
 const config = {
   env: NODE_ENV,
   isProduction,
+  host: process.env.HOST || '0.0.0.0',
   port: parseInt(process.env.PORT, 10) || 3000,
   trustProxy: process.env.TRUST_PROXY === 'true' || isProduction,
 
-  // Database Connection Details
+  // Database Connection Details (Supports local and cloud environments e.g. Railway MySQL)
   db: {
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: parseInt(process.env.DB_PORT, 10) || 3306,
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'energysaver_db',
+    host: process.env.DB_HOST || process.env.MYSQLHOST || '127.0.0.1',
+    port: parseInt(process.env.DB_PORT || process.env.MYSQLPORT, 10) || 3306,
+    user: process.env.DB_USER || process.env.MYSQLUSER || 'root',
+    password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '',
+    database: process.env.DB_NAME || process.env.MYSQLDATABASE || 'energysaver_db',
     connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT, 10) || 10,
     waitForConnections: true,
-    queueLimit: 0
+    queueLimit: 0,
+    ssl: process.env.DB_SSL === 'true'
+      ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' }
+      : undefined
   },
 
   // Session Settings
