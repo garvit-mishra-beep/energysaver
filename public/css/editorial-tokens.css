@@ -1,0 +1,119 @@
+/**
+ * EnergySaver - Option B Warm Minimalist Editorial Design Tokens
+ * Source of Truth: Extracted UI/UX Design System Specification
+ */
+
+:root {
+  /* ========================================================================
+     1. Exact Color Palette
+     ======================================================================== */
+  --color-canvas: #F9F6F0;           /* Oatmeal background - entire canvas */
+  --color-stone: #EFECE4;            /* Warm stone secondary surfaces & subtle banners */
+  --color-surface: #FFFFFF;          /* Pure white for cards & elevated panels */
+  --color-ink: #1C2420;              /* Primary dark botanical ink for headings/text */
+  --color-lead: #4A4842;             /* Lead text for hero supporting descriptions */
+  --color-muted: #68655E;            /* Muted technical text & secondary labels */
+  --color-forest: #1B3B2B;           /* Deep forest green for primary CTA & floating nav */
+  --color-botanical: #2D5A40;        /* Botanical green for sliders, progress, chart accents */
+  --color-forest-hover: #254F3B;     /* Deep forest hover state */
+  --color-sage: #EBF2EE;             /* Sage tint for positive status & savings pills */
+  --color-sage-text: #1B4D31;        /* Dark green text on sage background */
+  --color-border: #E8E2D5;           /* Warm border for cards, dividers & panels */
+  --color-border-input: #D8D0C1;     /* Border for form inputs & dropdowns */
+  --color-terracotta: #C86D51;       /* Terracotta for kitchen, warnings & accents */
+  --color-ochre: #E2A856;            /* Warm ochre for bedrooms & approaching budget */
+  --color-slate: #6B8E9B;            /* Slate blue for study & outdoor */
+  --color-plum: #8C6D87;             /* Dusty plum for bathroom */
+  --color-moss: #4A7C59;             /* Moss green for utility room */
+  --color-danger: #C86D51;           /* Terracotta red for destructive actions */
+  --color-danger-bg: #FDF3F0;        /* Light terracotta background */
+  --color-danger-border: #F0C4B8;
+
+  /* Backward Compatibility Aliases */
+  --color-bg: var(--color-canvas);
+  --color-bg-canvas: var(--color-canvas);
+  --color-bg-surface: var(--color-surface);
+  --color-bg-subtle: var(--color-stone);
+  --color-surface-elevated: var(--color-surface);
+  --color-text-primary: var(--color-ink);
+  --color-text-secondary: var(--color-lead);
+  --color-text-muted: var(--color-muted);
+  --color-primary: var(--color-forest);
+  --color-primary-hover: var(--color-forest-hover);
+  --color-primary-light: var(--color-sage);
+  --color-primary-border: #C2D6C9;
+  --color-border-focus: var(--color-botanical);
+
+  /* ========================================================================
+     2. Reference Typography
+     ======================================================================== */
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  --font-family-base: var(--font-sans);
+  --font-family-serif: var(--font-serif);
+  --font-family-mono: var(--font-mono);
+
+  /* Type Scale */
+  --font-size-hero-desktop: 3.375rem; /* 54px */
+  --font-size-hero-mobile: 1.875rem;  /* 30px */
+  --font-size-h1-desktop: 2.25rem;    /* 36px */
+  --font-size-h1-mobile: 1.875rem;    /* 30px */
+  --font-size-h2-desktop: 1.875rem;   /* 30px */
+  --font-size-h2-mobile: 1.5rem;      /* 24px */
+  --font-size-card-title: 1.25rem;    /* 20px */
+  --font-size-hero-sub-desktop: 1.125rem; /* 18px */
+  --font-size-hero-sub-mobile: 1.0rem;    /* 16px */
+  --font-size-body: 0.875rem;         /* 14px */
+  --font-size-btn: 0.75rem;           /* 12px */
+  --font-size-nav-label: 0.6875rem;   /* 11px */
+  --font-size-tech: 0.75rem;          /* 12px */
+
+  --line-height-hero: 1.12;
+  --letter-spacing-hero: -0.025em;
+
+  /* ========================================================================
+     3. Spatial System (4px Base Grid)
+     ======================================================================== */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  --container-max-width: 1240px;
+  --content-padding-desktop: 32px;
+  --content-padding-mobile: 20px;
+  --card-gap: 20px;
+  --card-padding: 24px;
+  --section-spacing: 32px;
+
+  /* ========================================================================
+     4. Geometry & Radius
+     ======================================================================== */
+  --radius-card: 16px;
+  --radius-input: 12px;
+  --radius-modal: 24px;
+  --radius-pill: 9999px;
+  --radius-sm: 8px;
+  --radius-xs: 4px;
+
+  /* ========================================================================
+     5. Green-Tinted Low-Opacity Shadows
+     ======================================================================== */
+  --shadow-card: 0 8px 24px -6px rgba(27, 59, 43, 0.05), 0 2px 6px -1px rgba(27, 59, 43, 0.03);
+  --shadow-card-hover: 0 14px 32px -8px rgba(27, 59, 43, 0.09), 0 4px 10px -2px rgba(27, 59, 43, 0.04);
+  --shadow-nav: 0 16px 40px -8px rgba(20, 42, 31, 0.38), 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-modal: 0 24px 60px -12px rgba(27, 59, 43, 0.18), 0 8px 20px -4px rgba(27, 59, 43, 0.08);
+
+  /* ========================================================================
+     6. Motion & Microinteractions (Calm & Tactile)
+     ======================================================================== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}

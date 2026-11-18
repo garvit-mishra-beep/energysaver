@@ -1,0 +1,91 @@
+/* EnergySaver - Clean Browser Print Stylesheet
+   Optimized for A4 / Letter paper reports */
+
+@media print {
+  /* Hide interactive elements, headers, banners, and buttons */
+  .site-header,
+  .demo-banner,
+  .site-footer,
+  .page-header-actions,
+  .btn,
+  .filter-bar,
+  .modal-backdrop,
+  .toast-container,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
+  }
+
+  .main-content {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .card {
+    border: 1px solid #CCCCCC !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .card-header {
+    background-color: #F5F5F5 !important;
+    border-bottom: 1px solid #CCCCCC !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  .data-table {
+    width: 100% !important;
+    font-size: 9pt !important;
+  }
+
+  .data-table th {
+    background-color: #EEEEEE !important;
+    color: #000000 !important;
+    border-bottom: 1px solid #000000 !important;
+  }
+
+  .data-table td {
+    border-bottom: 1px solid #DDDDDD !important;
+    color: #111111 !important;
+  }
+
+  /* Force print color accuracy */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Document Print Header */
+  .print-header {
+    display: block !important;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #333333;
+  }
+
+  .print-header h1 {
+    font-size: 16pt !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .print-header p {
+    font-size: 9pt !important;
+    color: #555555 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+/* Hide print header in screen view */
+@media screen {
+  .print-header {
+    display: none;
+  }
+}

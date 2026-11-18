@@ -1,0 +1,52 @@
+{
+  "name": "energysaver",
+  "version": "1.0.0",
+  "description": "Electricity Usage Analyzer - Student Capstone Project",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:check": "node src/scripts/dbCheck.js",
+    "db:init": "node src/scripts/initDb.js",
+    "test:phase2": "node test/phase2.test.js",
+    "test:phase3": "node test/phase3.test.js",
+    "test:stage0": "node test/stage0.test.js",
+    "test:phase4": "node test/phase4.test.js",
+    "test:phase5": "node test/phase5.test.js",
+    "test:calc": "node test/calculations.test.js",
+    "test:security": "node test/security.test.js",
+    "test:browser": "node test/browser.test.js",
+    "test:e2e": "node test/post_redesign_audit.test.js",
+    "test": "node test/phase2.test.js && node test/phase3.test.js && node test/stage0.test.js && node test/phase4.test.js && node test/phase5.test.js && node test/calculations.test.js && node test/security.test.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "electricity",
+    "energy-saver",
+    "household-budgeting",
+    "node",
+    "express",
+    "mysql"
+  ],
+  "author": "Student Project",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-mysql-session": "^3.0.3",
+    "express-session": "^1.18.0",
+    "helmet": "^7.1.0",
+    "mysql2": "^3.24.6"
+  },
+  "overrides": {
+    "express-mysql-session": {
+      "mysql2": "$mysql2"
+    },
+    "@mapbox/node-pre-gyp": {
+      "tar": "^7.5.23"
+    }
+  }
+}

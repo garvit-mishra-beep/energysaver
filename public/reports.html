@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports – EnergySaver</title>
+  <meta name="description" content="Monthly estimate snapshots, actual utility bill logs, and reconciliation analysis.">
+
+  <!-- Editorial Google Fonts with Offline Fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/editorial-tokens.css">
+  <link rel="stylesheet" href="css/editorial-theme.css">
+  <link rel="stylesheet" href="css/print.css">
+</head>
+
+<body>
+
+  <!-- Printable Document Header (Visible only when printed or saved as PDF) -->
+  <div class="print-header">
+    <h1>EnergySaver – Household Electricity Report</h1>
+    <p>Generated on
+      <script>document.write(new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }))</script>
+      &bull; Student Capstone Project
+    </p>
+  </div>
+
+  <!-- Persistent Demo Indicator Banner -->
+  <aside class="demo-banner no-print" aria-label="Demo Status Banner">
+    <div class="demo-banner-content">
+      <span class="demo-badge">Demo Mode</span>
+      <span>Showing sample household reports and bill reconciliation records.</span>
+    </div>
+    <div class="demo-actions">
+      <button type="button" id="demoResetBtn">Reset sample data</button>
+      <span aria-hidden="true">&bull;</span>
+      <button type="button" id="demoEmptyBtn">Preview empty state</button>
+      <span aria-hidden="true">&bull;</span>
+      <a href="login.html">Sign In</a>
+    </div>
+  </aside>
+
+  <!-- Minimal Editorial Top Header -->
+  <header class="site-header no-print">
+    <div class="header-container">
+      <a href="index.html" class="brand" aria-label="EnergySaver Home">
+        <span class="brand-title">EnergySaver</span>
+        <span class="brand-subtitle">Electricity Usage Analyzer</span>
+      </a>
+
+      <!-- Right Navigation Links -->
+      <div class="header-nav-links">
+        <a href="index.html" class="header-text-link">Usage</a>
+        <a href="reports.html" class="header-text-link">Tips</a>
+        <a href="settings.html" class="header-text-link">Budget</a>
+        <a href="settings.html" class="header-profile-btn" aria-label="Account Profile & Settings" title="Account Settings">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+
+    <!-- Page Context Header -->
+    <section class="page-header" style="margin-bottom: var(--space-6);">
+      <div class="page-header-title-group">
+        <h1 class="serif-heading" style="font-size: 2.25rem; margin-bottom: 4px;">Reports & Bill Reconciliation</h1>
+        <div class="page-header-meta">
+          Preserve immutable monthly estimate snapshots and reconcile against actual utility bills
+          <span id="reportsModeBadge" class="badge" style="margin-left: 8px;"></span>
+        </div>
+      </div>
+      <div class="page-header-actions no-print" style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button type="button" id="exportCsvBtn" class="btn btn-secondary btn-sm" title="Export active inventory as CSV">
+          Export CSV
+        </button>
+        <button type="button" id="printReportBtn" class="btn btn-secondary btn-sm" title="Print report or save as PDF">
+          Print / PDF
+        </button>
+        <button type="button" id="saveSnapshotBtn" class="btn btn-secondary btn-sm" title="Freeze current inventory and calculations">
+          Save Snapshot
+        </button>
+        <button type="button" id="openLogBillModalBtn" class="btn btn-primary btn-sm">
+          + Log Actual Bill
+        </button>
+      </div>
+    </section>
+
+    <!-- Error Alert Container -->
+    <div id="reportsErrorContainer" style="display: none; margin-bottom: var(--space-4);"></div>
+
+    <!-- SECTION 1: Estimate vs Actual Bill Reconciliation Tool -->
+    <section class="card editorial-table-card">
+      <div class="card-header">
+        <div>
+          <h2 style="font-size: 1.375rem; margin-bottom: 2px;">Estimate vs. Actual Bill Reconciliation</h2>
+          <p class="metric-subtext" style="margin: 0;">Compare a saved monthly estimate against an actual provider bill
+            covering matching dates.</p>
+        </div>
+      </div>
+      <div class="card-body" style="padding: 24px;">
+
+        <div class="form-row two-col" style="align-items: flex-end; margin-bottom: var(--space-4);">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="reconcileSnapshotSelect" class="form-label">Select Saved Estimate Snapshot:</label>
+            <select id="reconcileSnapshotSelect" class="form-control"></select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="reconcileBillSelect" class="form-label">Select Logged Actual Bill:</label>
+            <select id="reconcileBillSelect" class="form-control"></select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: var(--space-4);">
+          <button type="button" id="reconcileTriggerBtn" class="btn btn-primary btn-sm">
+            Run Reconciliation Comparison
+          </button>
+        </div>
+
+        <!-- Reconciliation Output Card -->
+        <div id="reconcileResultContainer" style="display: none; margin-top: var(--space-4);">
+          <div id="reconcileDateWarning"></div>
+
+          <div class="comparison-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 16px;">
+            <div class="card" style="background: var(--color-stone); border: 1px solid var(--color-border); border-radius: var(--radius-card); padding: 18px;">
+              <div class="metric-label">Estimated Model Prediction</div>
+              <div class="metric-value font-mono" id="reconcileEstimateKwh" style="font-size: 1.5rem; font-weight: 600; color: var(--color-ink);">0.00 kWh</div>
+              <div class="metric-subtext font-mono" id="reconcileEstimateCost">₹0.00</div>
+            </div>
+
+            <div class="card" style="background: var(--color-stone); border: 1px solid var(--color-border); border-radius: var(--radius-card); padding: 18px;">
+              <div class="metric-label">Actual Utility Bill</div>
+              <div class="metric-value font-mono" id="reconcileActualKwh" style="font-size: 1.5rem; font-weight: 600; color: var(--color-ink);">0.00 kWh</div>
+              <div class="metric-subtext font-mono" id="reconcileActualCost">₹0.00</div>
+            </div>
+          </div>
+
+          <div class="card" style="background-color: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card); margin-bottom: var(--space-4);">
+            <div class="card-body" style="padding: 16px 20px;">
+              <div class="form-row two-col">
+                <div>
+                  <span class="metric-label">Energy Variance</span>
+                  <div id="reconcileDiffKwh" class="metric-value font-mono" style="font-size: var(--font-size-md);">0.00 kWh</div>
+                </div>
+                <div>
+                  <span class="metric-label">Cost Variance</span>
+                  <div id="reconcileDiffCost" class="metric-value font-mono" style="font-size: var(--font-size-md);">₹0.00</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Educational Checklist Explaining Potential Discrepancies -->
+          <div class="alert alert-info" style="margin-bottom: 0; background-color: var(--color-sage); border-color: #C2D6C9; color: var(--color-sage-text);">
+            <div>
+              <div class="alert-title" style="color: var(--color-sage-text); font-weight: 600;">Understanding Estimation Differences:</div>
+              <ul style="margin-left: var(--space-4); margin-top: var(--space-1); font-size: var(--font-size-xs); line-height: 1.6;">
+                <li><strong>Temporary Appliances:</strong> Festive decorative lights, portable heaters, power tools, or guest visits not captured in standard schedules.</li>
+                <li><strong>Compressor & Thermostat Cycling:</strong> Refrigerators and air conditioners adjust duty cycles dynamically depending on seasonal outdoor weather.</li>
+                <li><strong>Utility Charges:</strong> Electricity bills often include fixed meter rent, municipal duties, power factor surcharges, or slab billing rates differing from a flat rate.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: Saved Monthly Estimate Snapshots -->
+    <section class="card editorial-table-card">
+      <div class="card-header">
+        <div>
+          <h2 style="font-size: 1.375rem; margin-bottom: 2px;">Saved Estimate Snapshots</h2>
+          <p class="metric-subtext" style="margin: 0;">Frozen records of previous months. Editing active appliances will
+            never alter these snapshots.</p>
+        </div>
+      </div>
+      <div class="table-container" style="margin-bottom: 0; border: none; border-radius: 0;">
+        <table class="data-table" aria-label="Saved Estimate Snapshots Table">
+          <thead>
+            <tr>
+              <th scope="col">Snapshot Label</th>
+              <th scope="col">Period Dates</th>
+              <th scope="col">Calculated Energy</th>
+              <th scope="col">Estimated Bill</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="text-right no-print">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="snapshotsTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="snapshotsEmptyState" class="empty-state" style="display: none; border: none;">
+        <h3 class="empty-state-title serif-heading">No saved snapshots yet</h3>
+        <p class="empty-state-text">Save your current month's estimate to begin tracking changes over time.</p>
+        <button type="button" class="btn btn-secondary btn-sm"
+          onclick="document.getElementById('saveSnapshotBtn').click()">
+          Save Current Snapshot
+        </button>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Logged Actual Utility Bills -->
+    <section class="card editorial-table-card">
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2 style="font-size: 1.375rem; margin-bottom: 2px;">Logged Actual Utility Bills</h2>
+          <p class="metric-subtext" style="margin: 0;">Historical records manually copied from your physical electricity
+            bills.</p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm no-print"
+          onclick="window.openActualBillModal ? window.openActualBillModal() : document.getElementById('openLogBillModalBtn').click()">
+          + Add Bill
+        </button>
+      </div>
+      <div class="table-container" style="margin-bottom: 0; border: none; border-radius: 0;">
+        <table class="data-table" aria-label="Logged Actual Utility Bills Table">
+          <thead>
+            <tr>
+              <th scope="col">Billing Dates</th>
+              <th scope="col">Billed Energy</th>
+              <th scope="col">Billed Amount</th>
+              <th scope="col">Provider</th>
+              <th scope="col">Notes</th>
+              <th scope="col" class="text-right no-print">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="actualBillsTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="actualBillsEmptyState" class="empty-state" style="display: none; border: none;">
+        <h3 class="empty-state-title serif-heading">No actual bills recorded</h3>
+        <p class="empty-state-text">When you receive your physical utility bill, record the dates and units to compare
+          with your estimates.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODAL 1: Snapshot Items Inspection Dialog
+       ========================================================================= -->
+  <div id="snapshotInspectionModal" class="modal-backdrop" role="dialog" aria-modal="true"
+    aria-labelledby="inspectionModalTitle">
+    <div class="modal-dialog" style="max-width: 640px;">
+      <div class="modal-header">
+        <div>
+          <h2 id="inspectionModalTitle">Snapshot Details</h2>
+          <p id="inspectionModalMeta" class="metric-subtext" style="margin: 0;"></p>
+        </div>
+        <button type="button" class="modal-close-btn" data-report-modal-close aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="table-container" style="margin-bottom: 0; border: none;">
+          <table class="data-table" aria-label="Frozen snapshot appliances table">
+            <thead>
+              <tr>
+                <th scope="col">Appliance</th>
+                <th scope="col">Room</th>
+                <th scope="col">Power</th>
+                <th scope="col">Usage</th>
+                <th scope="col">Monthly Energy</th>
+                <th scope="col" class="text-right">Cost</th>
+              </tr>
+            </thead>
+            <tbody id="inspectionTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-report-modal-close>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 2: Log Actual Utility Bill Dialog
+       ========================================================================= -->
+  <div id="actualBillModal" class="modal-backdrop" role="dialog" aria-modal="true"
+    aria-labelledby="actualBillModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="actualBillModalTitle">Log Actual Utility Bill</h2>
+        <button type="button" class="modal-close-btn" data-report-modal-close aria-label="Close dialog">&times;</button>
+      </div>
+
+      <form id="actualBillForm" novalidate>
+        <div class="modal-body">
+          <p class="metric-subtext" style="margin-bottom: var(--space-4);">
+            Enter the figures from your official physical or PDF electricity bill.
+          </p>
+
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label for="billStartDateInput" class="form-label">Billing Start Date *</label>
+              <input type="date" id="billStartDateInput" class="form-control" required value="2026-10-01">
+            </div>
+
+            <div class="form-group">
+              <label for="billEndDateInput" class="form-label">Billing End Date *</label>
+              <input type="date" id="billEndDateInput" class="form-control" required value="2026-10-31">
+            </div>
+          </div>
+
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label for="billKwhInput" class="form-label">Billed Units (kWh) *</label>
+              <input type="number" id="billKwhInput" class="form-control" min="0" step="0.5" placeholder="e.g. 340.0"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label for="billAmountInput" class="form-label">Total Amount Billed *</label>
+              <input type="number" id="billAmountInput" class="form-control" min="0" step="0.01"
+                placeholder="e.g. 2720.00" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="billProviderInput" class="form-label">Utility Provider Name</label>
+            <input type="text" id="billProviderInput" class="form-control" placeholder="e.g. State Electricity Board">
+          </div>
+
+          <div class="form-group">
+            <label for="billNotesInput" class="form-label">Notes (Optional)</label>
+            <textarea id="billNotesInput" class="form-control" rows="2"
+              placeholder="e.g. 3-day family gathering, AC ran extra"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-report-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Actual Bill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer no-print">
+    <div class="footer-container">
+      <div>
+        <strong>EnergySaver</strong> &bull; Household Electricity Usage Analyzer &bull; Student Project
+      </div>
+      <div class="footer-note">
+        Framework-free HTML5, Vanilla CSS, Vanilla JS & Chart.js
+      </div>
+    </div>
+  </footer>
+
+  <!-- EnergySaver Core Scripts -->
+  <script src="js/utils/calculator.js"></script>
+  <script src="js/utils/formatters.js"></script>
+  <script src="js/utils/presets.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/components/appliance-illustrations.js"></script>
+  <script src="js/components/editorial-navigation.js"></script>
+  <script src="js/savings-modal.js"></script>
+  <script src="js/reports.js"></script>
+</body>
+
+</html>

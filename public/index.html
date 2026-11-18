@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Home – EnergySaver</title>
+  <meta name="description" content="Household electricity usage analyzer, monthly budget tracker, and visual room breakdown.">
+
+  <!-- Editorial Google Fonts with Offline Fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Core & Editorial Design System Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/editorial-tokens.css">
+  <link rel="stylesheet" href="css/editorial-theme.css">
+  <link rel="stylesheet" href="css/print.css">
+</head>
+
+<body>
+
+  <!-- Persistent Demo Indicator Banner -->
+  <aside class="demo-banner no-print" aria-label="Demo Status Banner">
+    <div class="demo-banner-content">
+      <span class="demo-badge">Demo Mode</span>
+      <span>Showing sample household data stored locally in your browser.</span>
+    </div>
+    <div class="demo-actions">
+      <button type="button" id="demoResetBtn" title="Reset to sample 2-BHK apartment data">Reset sample data</button>
+      <span aria-hidden="true">&bull;</span>
+      <button type="button" id="demoEmptyBtn" title="Preview empty household state">Preview empty state</button>
+      <span aria-hidden="true">&bull;</span>
+      <a href="login.html">Sign In</a>
+    </div>
+  </aside>
+
+  <!-- Minimal Editorial Top Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="brand" aria-label="EnergySaver Home">
+        <span class="brand-title">EnergySaver</span>
+        <span class="brand-subtitle">Electricity Usage Analyzer</span>
+      </a>
+
+      <!-- Right Navigation Links matching Reference Design -->
+      <div class="header-nav-links">
+        <a href="index.html" class="header-text-link">Usage</a>
+        <a href="reports.html" class="header-text-link">Tips</a>
+        <a href="settings.html" class="header-text-link">Budget</a>
+        <a href="settings.html" class="header-profile-btn" aria-label="Account Profile & Settings" title="Account Settings">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+
+    <!-- Error Alert Container -->
+    <div id="dashboardErrorContainer" style="display: none; margin-bottom: var(--space-4);"></div>
+
+    <!-- Budget Warning Banner -->
+    <div id="budgetAlertBanner" style="display: none; margin-bottom: var(--space-4);"></div>
+
+    <!-- Empty State Container (Visible when 0 appliances exist) -->
+    <div id="dashboardEmptyState" class="empty-state" style="display: none;">
+      <h2 class="empty-state-title serif-heading">No appliances added yet</h2>
+      <p class="empty-state-text">
+        Add your first appliance or explore common household presets to see your estimated monthly electricity
+        consumption and costs.
+      </p>
+      <div style="display: flex; gap: var(--space-2); justify-content: center; flex-wrap: wrap; margin-top: 16px;">
+        <a href="appliances.html" class="btn btn-primary">+ Add Your First Appliance</a>
+        <button type="button" class="btn btn-secondary" id="dashboardLoadSampleBtn"
+          onclick="if (window.EnergyStorage) { window.EnergyStorage.resetToSampleData(); window.location.reload(); }">
+          Load Sample 2-BHK Apartment
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Dashboard Content Container -->
+    <div id="dashboardContent">
+
+      <!-- Conversational Editorial Hero Section -->
+      <section class="editorial-hero" aria-label="Monthly Household Energy Projection">
+        <h1 id="heroHeadline" class="editorial-hero-headline">Your home is on track for 2,480 rupees this month</h1>
+        <p id="heroSubtitle" class="editorial-hero-sub">
+          Based on your daily usage across all rooms. You're using <strong>12% less</strong> than last month.
+        </p>
+
+        <!-- Subtle Metadata Context -->
+        <div class="page-header-meta" style="margin-top: 14px; font-size: 0.8125rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <span id="dashboardModeBadge" class="badge">Loading...</span>
+          <span aria-hidden="true">&bull;</span>
+          <span id="dashboardPeriodName">Estimated Period: Current</span>
+          <span aria-hidden="true">&bull;</span>
+          <span id="dashboardTariffRate">Electricity Rate: ₹8.00 / kWh</span>
+        </div>
+      </section>
+
+      <!-- Continuous Segmented Room Breakdown Bar & Legend -->
+      <section class="room-breakdown-section" aria-label="Room Breakdown">
+        <div class="room-breakdown-label">Room Breakdown</div>
+        <div id="roomBreakdownTrack" class="room-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Room electricity distribution progress bar">
+          <!-- Dynamically populated room progress segments -->
+        </div>
+        <div id="roomLegend" class="room-legend">
+          <!-- Dynamically populated room dots with percentage -->
+        </div>
+      </section>
+
+      <!-- Room Filter Pills -->
+      <div id="roomFilterPills" class="room-filter-container" role="tablist" aria-label="Filter appliances by room">
+        <button type="button" class="room-filter-pill is-active" data-room="all" role="tab" aria-selected="true">All Rooms</button>
+        <!-- Additional room buttons injected dynamically -->
+      </div>
+
+      <!-- Illustrated Appliance Cards Grid (6-across desktop layout matching reference) -->
+      <section aria-label="Household Appliances Grid">
+        <div id="dashboardApplianceGrid" class="appliance-editorial-grid">
+          <!-- Populated dynamically with illustrated cards -->
+        </div>
+      </section>
+
+      <!-- Detailed Consumption Analytics & Visualizations Section -->
+      <section class="card editorial-table-card" style="margin-top: var(--space-8);">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-2);">
+          <div>
+            <h2 style="font-size: 1.5rem; margin-bottom: 2px;">Consumption Analytics & Visualizations</h2>
+            <span class="metric-subtext">Aggregated charts, room breakdown table and consumption metrics</span>
+          </div>
+          <div class="no-print">
+            <button type="button" class="btn btn-secondary btn-sm" id="dashboardOpenSavingsBtn">
+              Savings Experiment
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body" style="padding: 24px;">
+
+          <!-- Key Household Consumption Metrics Grid -->
+          <section class="metrics-grid" aria-label="Key Household Consumption Metrics" style="margin-bottom: var(--space-6);">
+            <div class="metric-card">
+              <span class="metric-label">Estimated Monthly Use</span>
+              <span class="metric-value font-mono" id="metricMonthlyKwh">0.00 kWh</span>
+              <span class="metric-subtext" id="metricDailyAvgKwh">~0.00 kWh / day</span>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-label">Estimated Monthly Bill</span>
+              <span class="metric-value font-mono" id="metricMonthlyCost">₹0.00</span>
+              <span class="metric-subtext" id="metricCostSubtext">Calculated at ₹8.00/kWh</span>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-label">Budget Status</span>
+              <span class="metric-value font-mono" id="metricBudgetStatus">₹0.00 Left</span>
+              <span class="metric-subtext" id="metricBudgetSubtext">Budget limit</span>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-label">Highest Consumer</span>
+              <span class="metric-value" id="metricTopConsumerName" style="font-size: var(--font-size-lg);">None</span>
+              <span class="metric-subtext font-mono" id="metricTopConsumerShare">0 kWh (0%)</span>
+            </div>
+          </section>
+
+          <!-- Contextual Educational Tip -->
+          <div id="contextualTipContainer"></div>
+
+          <!-- Charts Grid (Room Donut & Top Consumer Bar) -->
+          <div class="form-row two-col" style="margin-bottom: var(--space-6);">
+            <!-- Room Distribution Donut Chart -->
+            <div class="card" style="margin-bottom: 0;">
+              <div class="card-header">
+                <h3 style="font-size: 1.125rem;">Consumption by Room</h3>
+                <span class="metric-subtext">Estimated Share</span>
+              </div>
+              <div class="card-body">
+                <div style="position: relative; height: 260px; width: 100%;">
+                  <canvas id="roomChartCanvas" aria-label="Room consumption distribution chart" role="img"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Consuming Appliances Bar Chart -->
+            <div class="card" style="margin-bottom: 0;">
+              <div class="card-header">
+                <h3 style="font-size: 1.125rem;">Highest Consuming Appliances</h3>
+                <span class="metric-subtext">Monthly kWh</span>
+              </div>
+              <div class="card-body">
+                <div style="position: relative; height: 260px; width: 100%;">
+                  <canvas id="topAppliancesChartCanvas" aria-label="Top consuming appliances bar chart" role="img"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Room-wise Summary Table -->
+          <div class="table-container" style="margin-bottom: 0; border: none; border-radius: 0;">
+            <table class="data-table" aria-label="Room-wise electricity consumption table">
+              <thead>
+                <tr>
+                  <th scope="col">Room</th>
+                  <th scope="col">Appliances</th>
+                  <th scope="col">Monthly Energy</th>
+                  <th scope="col">Share</th>
+                  <th scope="col" class="text-right">Estimated Cost</th>
+                </tr>
+              </thead>
+              <tbody id="roomBreakdownTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Educational Disclaimer Note -->
+          <div class="card-footer" style="margin-top: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md); background-color: var(--color-stone);">
+            <p style="margin: 0; font-size: var(--font-size-xs); color: var(--color-muted);">
+              <strong>Educational Estimation Notice:</strong> Figures presented are mathematical estimates computed from user-entered appliance wattages, estimated runtimes, and flat tariff rates. Actual utility bills may vary due to appliance thermostat cycling, seasonal temperature fluctuations, or provider fixed fees.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer no-print">
+    <div class="footer-container">
+      <div>
+        <strong>EnergySaver</strong> &bull; Household Electricity Usage Analyzer &bull; Student Project
+      </div>
+      <div class="footer-note">
+        Framework-free HTML5, Vanilla CSS, Vanilla JS & Chart.js
+      </div>
+    </div>
+  </footer>
+
+  <!-- Chart.js: Local Offline Vendor Bundle with CDN Fallback -->
+  <script src="js/vendor/chart.umd.min.js"></script>
+  <script>
+    if (typeof Chart === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"><\/script>');
+    }
+  </script>
+
+  <!-- EnergySaver Core Scripts -->
+  <script src="js/utils/calculator.js"></script>
+  <script src="js/utils/formatters.js"></script>
+  <script src="js/utils/presets.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/components/appliance-illustrations.js"></script>
+  <script src="js/components/editorial-navigation.js"></script>
+  <script src="js/savings-modal.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+
+</html>

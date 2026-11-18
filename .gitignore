@@ -1,0 +1,87 @@
+# ==============================================================================
+# EnergySaver - Production .gitignore
+# Clean Public Repository Specification
+# ==============================================================================
+
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Environment Variables & Sensitive Credentials
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*
+!.env.example
+
+# Private Development Audit Reports & Verification Evidence
+/audit/
+
+# Private Test Suites & Automation Harnesses
+/test/
+/tests/
+
+# Local Test Coverage & Test Tooling Cache
+/coverage/
+/.nyc_output/
+/test-results/
+/playwright-report/
+.cache/
+
+# Runtime Logs & Debugging Output
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Database Dumps & Local Backups
+*.sql.gz
+*.sql.zip
+backups/
+/backups/
+database-backups/
+*.dump
+
+# Temporary Directories & Scratch Files
+tmp/
+/tmp/
+temp/
+/temp/
+*.tmp
+scratch/
+/scratch/
+.system_generated/
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Configurations
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Cryptographic Keys & Private Certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.cert
+*.crt

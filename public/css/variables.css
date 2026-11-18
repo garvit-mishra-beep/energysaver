@@ -1,0 +1,83 @@
+/* EnergySaver Design System - CSS Custom Properties
+   Aesthetic: Digital Household Electricity Notebook
+   Palette: Warm off-white, Charcoal text, Muted forest green actions, Thin borders */
+
+:root {
+  /* Surface & Background Colors */
+  --color-bg-canvas: #FBFBF9;       /* Warm off-white notebook background */
+  --color-bg-surface: #FFFFFF;      /* Clean card and surface white */
+  --color-bg-subtle: #F4F4EE;       /* Subtle table header & light highlight */
+  --color-bg-alt: #EFEFE9;          /* Slightly deeper notebook tone */
+  --color-border: #E2E2D8;          /* Restrained, soft border */
+  --color-border-dark: #C8C8BC;     /* Stronger dividing border */
+  --color-border-focus: #2E6F40;    /* High-contrast focus ring */
+
+  /* Text & Typography Colors */
+  --color-text-primary: #2D312E;    /* Deep charcoal for primary text */
+  --color-text-secondary: #5C625E;  /* Subdued charcoal for secondary text */
+  --color-text-muted: #828A84;      /* Hint, placeholder, and disabled text */
+  --color-text-inverse: #FFFFFF;    /* Text on dark buttons */
+
+  /* Primary Brand & Interactive */
+  --color-primary: #2E6F40;         /* Muted forest green */
+  --color-primary-hover: #235732;   /* Deeper green for hover states */
+  --color-primary-light: #EBF3ED;   /* Soft tinted green background */
+  --color-primary-border: #BCD5C3;  /* Tinted green border */
+
+  /* Semantic Feedback & Alerts */
+  --color-warning-text: #7A4E00;    /* Amber text for approaching budget */
+  --color-warning-bg: #FEF8EC;      /* Soft warm amber background */
+  --color-warning-border: #F5DCA3;  /* Amber border */
+
+  --color-danger-text: #9B2226;     /* Deep crimson for over-budget / delete */
+  --color-danger-bg: #FDF2F0;       /* Soft red alert background */
+  --color-danger-border: #F3BDB7;   /* Soft red border */
+
+  --color-info-text: #1B4965;       /* Slate blue informational text */
+  --color-info-bg: #F0F5F9;         /* Slate blue background */
+  --color-info-border: #C5D7E5;     /* Slate blue border */
+
+  --color-demo-badge-text: #4A4E69; /* Slate purple for demo badge */
+  --color-demo-badge-bg: #F2F1F8;   /* Soft lavender tint */
+  --color-demo-badge-border: #D3D0E4;
+
+  /* Typography Scale */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1.0rem;   /* 16px */
+  --font-size-md: 1.125rem;   /* 18px */
+  --font-size-lg: 1.25rem;    /* 20px */
+  --font-size-xl: 1.5rem;     /* 24px */
+  --font-size-2xl: 1.875rem;  /* 30px */
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.65;
+
+  /* Spacing Scale (4px / 8px baseline) */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1.0rem;   /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2.0rem;   /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3.0rem;  /* 48px */
+
+  /* Modest Radii & Restrained Shadows */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --shadow-subtle: 0 1px 2px rgba(45, 49, 46, 0.05);
+  --shadow-card: 0 1px 3px rgba(45, 49, 46, 0.08);
+  --shadow-modal: 0 8px 24px rgba(45, 49, 46, 0.14);
+
+  /* Max Content Container */
+  --container-max-width: 1120px;
+}
