@@ -5,7 +5,7 @@
 
 const { createApp } = require('./app');
 const config = require('./config');
-const { checkConnection, closePool } = require('./config/database');
+const { checkConnection, ensureSchema, closePool } = require('./config/database');
 
 const app = createApp();
 
@@ -18,6 +18,7 @@ const server = app.listen(config.port, config.host, async () => {
   const dbStatus = await checkConnection();
   if (dbStatus.ok) {
     console.log(`[ENERGY SAVER] MySQL database connection verified (Host: ${config.db.host}:${config.db.port}, Database: ${config.db.database})`);
+    await ensureSchema();
   } else {
     console.warn(`[ENERGY SAVER NOTICE] MySQL database is currently unreachable at ${config.db.host}:${config.db.port} (${dbStatus.error}).`);
     if (config.isProduction) {

@@ -3,6 +3,8 @@
  * Uses mysql2/promise for connection pooling and parameterised SQL execution.
  */
 
+const fs = require('fs');
+const path = require('path');
 const mysql = require('mysql2/promise');
 const config = require('./index');
 
@@ -66,6 +68,38 @@ async function checkConnection() {
 }
 
 /**
+ * Checks whether core tables exist in the database, and automatically applies
+ * sql/schema.sql (using non-destructive CREATE TABLE IF NOT EXISTS) if uninitialized.
+ */
+async function ensureSchema() {
+  try {
+    const activePool = getPool();
+    const [rows] = await activePool.query("SHOW TABLES LIKE 'users'");
+    if (rows.length === 0) {
+      console.log('[ENERGY SAVER] Fresh database detected. Applying schema tables...');
+      const schemaPath = path.resolve(__dirname, '../../sql/schema.sql');
+      const schemaSql = fs.readFileSync(schemaPath, 'utf-8');
+
+      const dbOpts = {
+        host: config.db.host,
+        port: config.db.port,
+        user: config.db.user,
+        password: config.db.password,
+        database: config.db.database,
+        multipleStatements: true
+      };
+      if (config.db.ssl) dbOpts.ssl = config.db.ssl;
+      const initConn = await mysql.createConnection(dbOpts);
+      await initConn.query(schemaSql);
+      await initConn.end();
+      console.log('[ENERGY SAVER] Database schema initialized successfully.');
+    }
+  } catch (err) {
+    console.warn('[ENERGY SAVER] Notice during automatic schema check:', err.message);
+  }
+}
+
+/**
  * Closes the database pool cleanly during graceful server shutdown.
  */
 async function closePool() {
@@ -83,5 +117,6 @@ async function closePool() {
 module.exports = {
   getPool,
   checkConnection,
+  ensureSchema,
   closePool
 };
