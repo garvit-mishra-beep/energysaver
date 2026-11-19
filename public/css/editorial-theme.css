@@ -892,7 +892,36 @@ body:has(.modal-backdrop.is-open) .editorial-floating-nav {
 }
 
 /* ==========================================================================
-   13. Accessibility & Motion Preferences
+   13. Editorial Footer Styling
+   ========================================================================== */
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-canvas);
+  color: var(--color-lead);
+}
+
+.footer-brand-link {
+  color: var(--color-ink);
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+}
+
+.footer-brand-link:hover {
+  color: var(--color-botanical);
+}
+
+.footer-nav-link {
+  color: var(--color-forest);
+  font-weight: 600;
+}
+
+.footer-nav-link:hover {
+  color: var(--color-botanical);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   14. Accessibility & Motion Preferences
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
