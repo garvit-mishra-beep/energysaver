@@ -246,28 +246,29 @@ a:hover {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4);
   align-items: center;
   text-align: center;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .footer-container {
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     text-align: left;
   }
 }
 
 .footer-links-group {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-2);
   justify-content: center;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .footer-links-group {
     justify-content: flex-start;
   }
@@ -295,6 +296,30 @@ a:hover {
 .footer-nav-link:hover {
   color: var(--color-primary-hover);
   text-decoration: underline;
+}
+
+.footer-nav-link[aria-current="page"] {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer-separator {
+  color: var(--color-border);
+  user-select: none;
+}
+
+.footer-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+@media (min-width: 768px) {
+  .footer-meta {
+    text-align: right;
+  }
 }
 
 .footer-note {

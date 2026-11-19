@@ -912,12 +912,23 @@ body:has(.modal-backdrop.is-open) .editorial-floating-nav {
 
 .footer-nav-link {
   color: var(--color-forest);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .footer-nav-link:hover {
   color: var(--color-botanical);
   text-decoration: underline;
+}
+
+.footer-nav-link[aria-current="page"] {
+  color: var(--color-ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer-separator {
+  color: var(--color-border-input);
 }
 
 /* ==========================================================================
