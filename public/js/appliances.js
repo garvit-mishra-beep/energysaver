@@ -497,6 +497,13 @@
       });
     }
 
+    const emptyAddBtn = document.getElementById('emptyStateAddApplianceBtn');
+    if (emptyAddBtn) {
+      emptyAddBtn.addEventListener('click', function () {
+        openApplianceModal(null);
+      });
+    }
+
     // Modal close handlers
     document.querySelectorAll('[data-app-modal-close]').forEach((btn) => {
       btn.addEventListener('click', closeApplianceModal);

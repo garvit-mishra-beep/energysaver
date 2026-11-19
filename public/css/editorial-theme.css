@@ -171,23 +171,21 @@ a:hover {
 }
 
 /* Slim Mode Status Banner */
-.demo-banner, .auth-banner {
-  background-color: var(--color-stone);
-  border-bottom: 1px solid var(--color-border);
+.demo-banner:not(.auth-banner) {
+  display: none !important;
+}
+
+.auth-banner {
+  background-color: var(--color-sage);
+  border-bottom: 1px solid #C2D6C9;
+  color: var(--color-sage-text);
   padding: 6px var(--content-padding-desktop);
   font-size: 0.75rem;
-  color: var(--color-lead);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--space-2);
-}
-
-.auth-banner {
-  background-color: var(--color-sage);
-  border-bottom-color: #C2D6C9;
-  color: var(--color-sage-text);
 }
 
 /* ==========================================================================

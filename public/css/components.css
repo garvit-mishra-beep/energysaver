@@ -92,7 +92,8 @@
   background-color: var(--color-bg-surface);
 }
 
-.card-header h2, .card-header h3 {
+.card-header h2,
+.card-header h3 {
   margin-bottom: 0;
 }
 
@@ -276,6 +277,7 @@
   .form-row.two-col {
     grid-template-columns: 1fr 1fr;
   }
+
   .form-row.three-col {
     grid-template-columns: 1fr 1fr 1fr;
   }
@@ -325,7 +327,7 @@
   display: none;
 }
 
-.form-control.is-invalid + .form-error {
+.form-control.is-invalid+.form-error {
   display: block;
 }
 
@@ -444,7 +446,7 @@
   overflow: hidden;
 }
 
-.modal-dialog > form {
+.modal-dialog>form {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -462,7 +464,8 @@
   flex-shrink: 0;
 }
 
-.modal-header h2, .modal-header h3 {
+.modal-header h2,
+.modal-header h3 {
   margin-bottom: 0;
   font-size: var(--font-size-lg);
 }

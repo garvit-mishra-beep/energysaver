@@ -146,6 +146,21 @@
       logBillBtn.addEventListener('click', openActualBillModal);
     }
 
+    const addBillTableBtn = document.getElementById('openAddBillTableBtn');
+    if (addBillTableBtn) {
+      addBillTableBtn.addEventListener('click', openActualBillModal);
+    }
+
+    const emptyStateAddBillBtn = document.getElementById('emptyStateAddBillBtn');
+    if (emptyStateAddBillBtn) {
+      emptyStateAddBillBtn.addEventListener('click', openActualBillModal);
+    }
+
+    const saveSnapshotCardBtn = document.getElementById('saveSnapshotCardBtn');
+    if (saveSnapshotCardBtn) {
+      saveSnapshotCardBtn.addEventListener('click', handleSaveSnapshot);
+    }
+
     const billForm = document.getElementById('actualBillForm');
     if (billForm) {
       billForm.addEventListener('submit', handleLogActualBill);
@@ -412,11 +427,24 @@
 
   function openActualBillModal() {
     const modal = document.getElementById('actualBillModal');
-    if (modal) modal.classList.add('is-open');
+    if (modal) {
+      const errBox = document.getElementById('actualBillError');
+      if (errBox) {
+        errBox.textContent = '';
+        errBox.style.display = 'none';
+      }
+      modal.classList.add('is-open');
+    }
   }
 
   async function handleLogActualBill(e) {
     e.preventDefault();
+
+    const errBox = document.getElementById('actualBillError');
+    if (errBox) {
+      errBox.textContent = '';
+      errBox.style.display = 'none';
+    }
 
     const startDate = document.getElementById('billStartDateInput').value;
     const endDate = document.getElementById('billEndDateInput').value;
@@ -426,12 +454,24 @@
     const notes = document.getElementById('billNotesInput').value.trim();
 
     if (!startDate || !endDate || isNaN(kwh) || isNaN(amount)) {
-      alert('Please fill all required bill fields');
+      const msg = 'Please fill all required bill fields (dates, kWh units, and amount).';
+      if (errBox) {
+        errBox.textContent = msg;
+        errBox.style.display = 'block';
+      } else {
+        alert(msg);
+      }
       return;
     }
 
     if (new Date(endDate) < new Date(startDate)) {
-      alert('Billing end date cannot be earlier than start date');
+      const msg = 'Billing end date cannot be earlier than start date.';
+      if (errBox) {
+        errBox.textContent = msg;
+        errBox.style.display = 'block';
+      } else {
+        alert(msg);
+      }
       return;
     }
 
@@ -469,7 +509,13 @@
       await loadReportsData();
     } catch (err) {
       console.error('Failed to log actual bill:', err);
-      alert('Failed to log actual bill: ' + (err.message || 'Unknown error'));
+      const errMsg = 'Failed to log actual bill: ' + (err.message || 'Unknown error');
+      if (errBox) {
+        errBox.textContent = errMsg;
+        errBox.style.display = 'block';
+      } else {
+        alert(errMsg);
+      }
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;

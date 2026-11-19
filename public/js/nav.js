@@ -122,21 +122,9 @@
    */
   function renderGuestHeader() {
     const banner = document.querySelector('.demo-banner');
-    if (banner && !banner.innerHTML.includes('demoResetBtn')) {
-      banner.innerHTML = `
-        <div class="demo-banner-content">
-          <span class="demo-badge">Demo Mode</span>
-          <span>Showing sample household data stored locally in your browser.</span>
-        </div>
-        <div class="demo-actions">
-          <button type="button" id="demoResetBtn" title="Reset to sample 2-BHK apartment data">Reset sample data</button>
-          <span aria-hidden="true">&bull;</span>
-          <button type="button" id="demoEmptyBtn" title="Preview empty household state">Preview empty state</button>
-          <span aria-hidden="true">&bull;</span>
-          <a href="login.html">Sign In</a>
-        </div>
-      `;
-      setupDemoBannerActions();
+    if (banner) {
+      banner.style.display = 'none';
+      banner.innerHTML = '';
     }
   }
 

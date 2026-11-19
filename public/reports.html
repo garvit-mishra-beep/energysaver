@@ -31,20 +31,8 @@
     </p>
   </div>
 
-  <!-- Persistent Demo Indicator Banner -->
-  <aside class="demo-banner no-print" aria-label="Demo Status Banner">
-    <div class="demo-banner-content">
-      <span class="demo-badge">Demo Mode</span>
-      <span>Showing sample household reports and bill reconciliation records.</span>
-    </div>
-    <div class="demo-actions">
-      <button type="button" id="demoResetBtn">Reset sample data</button>
-      <span aria-hidden="true">&bull;</span>
-      <button type="button" id="demoEmptyBtn">Preview empty state</button>
-      <span aria-hidden="true">&bull;</span>
-      <a href="login.html">Sign In</a>
-    </div>
-  </aside>
+  <!-- Persistent Demo Indicator Banner (Hidden by default) -->
+  <aside class="demo-banner no-print" aria-label="Demo Status Banner" style="display: none;"></aside>
 
   <!-- Minimal Editorial Top Header -->
   <header class="site-header no-print">
@@ -206,8 +194,7 @@
       <div id="snapshotsEmptyState" class="empty-state" style="display: none; border: none;">
         <h3 class="empty-state-title serif-heading">No saved snapshots yet</h3>
         <p class="empty-state-text">Save your current month's estimate to begin tracking changes over time.</p>
-        <button type="button" class="btn btn-secondary btn-sm"
-          onclick="document.getElementById('saveSnapshotBtn').click()">
+        <button type="button" id="saveSnapshotCardBtn" class="btn btn-secondary btn-sm">
           Save Current Snapshot
         </button>
       </div>
@@ -221,8 +208,7 @@
           <p class="metric-subtext" style="margin: 0;">Historical records manually copied from your physical electricity
             bills.</p>
         </div>
-        <button type="button" class="btn btn-secondary btn-sm no-print"
-          onclick="window.openActualBillModal ? window.openActualBillModal() : document.getElementById('openLogBillModalBtn').click()">
+        <button type="button" id="openAddBillTableBtn" class="btn btn-secondary btn-sm no-print">
           + Add Bill
         </button>
       </div>
@@ -246,6 +232,9 @@
         <h3 class="empty-state-title serif-heading">No actual bills recorded</h3>
         <p class="empty-state-text">When you receive your physical utility bill, record the dates and units to compare
           with your estimates.</p>
+        <button type="button" id="emptyStateAddBillBtn" class="btn btn-primary btn-sm" style="margin-top: 12px;">
+          + Log Your First Bill
+        </button>
       </div>
     </section>
 
@@ -300,6 +289,7 @@
 
       <form id="actualBillForm" novalidate>
         <div class="modal-body">
+          <div id="actualBillError" class="alert alert-danger" style="display: none; margin-bottom: var(--space-3); padding: 8px 12px; font-size: var(--font-size-xs);"></div>
           <p class="metric-subtext" style="margin-bottom: var(--space-4);">
             Enter the figures from your official physical or PDF electricity bill.
           </p>
