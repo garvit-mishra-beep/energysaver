@@ -754,6 +754,7 @@ a:hover {
   background-color: rgba(28, 36, 32, 0.45);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  z-index: 2000;
 }
 
 .modal-dialog {
@@ -763,6 +764,18 @@ a:hover {
   box-shadow: var(--shadow-modal);
   max-width: 580px;
   width: 90%;
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-dialog > form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -770,6 +783,7 @@ a:hover {
   padding: 24px 28px 16px;
   border-bottom: 1px solid var(--color-border);
   background-color: var(--color-surface);
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -781,6 +795,27 @@ a:hover {
 .modal-body {
   padding: 24px 28px;
   background-color: var(--color-canvas);
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: var(--color-stone);
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
 }
 
 .modal-footer {
@@ -790,6 +825,15 @@ a:hover {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Hide floating nav bar when any modal is open to avoid obstruction */
+body:has(.modal-backdrop.is-open) .editorial-floating-nav {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 /* ==========================================================================
